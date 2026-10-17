@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interacciones de los Rayos X en Radiodiagnóstico Convencional</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;color-scheme:light;--bg:#EDF2F5;--card:#fff;--ink:#12202B;--mut:#566774;--line:#D3DDE4;--pe:#5B3FD9;--co:#C8741A;--tr:#13806A;--dan:#D12F5A;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Instrument Sans",system-ui,sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 16px 28px}
+h1{font-size:clamp(1.3rem,2.6vw,1.9rem);line-height:1.2;margin:0 0 4px;letter-spacing:-.01em}
+header p{margin:0 0 16px;color:var(--mut);max-width:70ch}
+main{display:grid;grid-template-columns:minmax(0,1fr) 370px;grid-template-areas:"stage side" "info side";gap:14px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card{color:var(--ink)}.card h2{font-size:1rem;margin:0 0 10px}
+.stagecard{grid-area:stage;padding:10px}.side{grid-area:side;display:grid;gap:14px}.info{grid-area:info}
+#sw{position:relative;border-radius:10px;overflow:hidden;background:linear-gradient(#F7FAFC,#E6EEF3)}
+#stage{display:block;width:100%;touch-action:pan-y;cursor:grab}#stage:active{cursor:grabbing}
+.hint{position:absolute;left:10px;bottom:8px;font-size:12px;color:var(--mut);background:#ffffffcc;padding:2px 8px;border-radius:6px}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.mode{all:unset;box-sizing:border-box;cursor:pointer;padding:10px 12px;border:1.5px solid var(--line);border-left:6px solid var(--c);border-radius:10px;background:#fff;transition:background .15s,box-shadow .15s}
+.mode:hover{background:#F6F9FB}.mode:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.mode[aria-checked=true]{background:color-mix(in srgb,var(--c) 10%,#fff);border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+.mode b{display:block;font-size:.95rem}.mode small{color:var(--mut)}
+.row{display:grid;grid-template-columns:1fr auto;align-items:baseline;margin-top:10px}
+.row label{font-weight:600}.row output{font:500 .95rem "JetBrains Mono",monospace}
+input[type=range]{grid-column:1/-1;width:100%;accent-color:#2A6FDB;margin:4px 0 0}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.kpi{background:#F3F7F9;border-radius:10px;padding:8px 10px}.kpi span{display:block;font-size:12px;color:var(--mut)}.kpi b{font:500 1.05rem "JetBrains Mono",monospace}
+.gauge{height:10px;border-radius:6px;position:relative;margin:10px 0 4px;background:linear-gradient(90deg,#A9BDFF 0 36%,#A4E3BE 36% 64%,#FF9F90 64%)}
+.gauge i{position:absolute;top:-4px;width:4px;height:18px;border-radius:2px;background:var(--ink);transform:translateX(-2px);transition:left .15s}
+.gl{display:flex;justify-content:space-between;font-size:11px;color:var(--mut)}
+.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:600;font-size:.85rem;margin-top:6px}
+.sub{background:#DCE5FF;color:#25409E}.ok{background:#D2F2E1;color:#0E6A4A}.sob{background:#FFDAD4;color:#A52A1A}
+.small{font-size:.85rem;color:var(--mut);margin:6px 0 0}
+#fv{display:block;width:100%;max-width:230px;aspect-ratio:1;margin:0 auto;border:2px solid #1c2b36;border-radius:6px;image-rendering:pixelated}
+.cap{display:flex;gap:10px;align-items:center;font-size:.85rem;margin-top:8px}
+.sw{width:18px;height:18px;border-radius:4px;border:2px solid var(--c);background:var(--b);flex:none}
+select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fff;color:var(--ink)}option{background:#fff;color:var(--ink)}
+.bar{display:grid;grid-template-columns:96px 1fr 44px;gap:8px;align-items:center;margin-top:8px;font-size:.85rem;color:var(--ink)}
+.bar div{height:10px;border-radius:5px;background:#E8EEF2;overflow:hidden}.bar i{display:block;height:100%;width:0;transition:width .2s}
+.bar em{font:500 .8rem "JetBrains Mono",monospace;font-style:normal;text-align:right}
+.info h2{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.info h2 span{font-weight:400;color:var(--mut);font-size:.9rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.cols h3{font-size:.85rem;margin:0 0 2px;color:var(--c)}.cols p{margin:0;font-size:.9rem}
+.note{font-size:.8rem;color:var(--mut);margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.btn{padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);font:600 .9rem "Instrument Sans",system-ui,sans-serif;cursor:pointer}.btn:hover{background:#F6F9FB}.btn:focus-visible{outline:2px solid #2A6FDB;outline-offset:2px}
+.tip{all:unset;box-sizing:border-box;position:relative;cursor:help}.tip .ic{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #2A6FDB;color:#2A6FDB;background:#fff;font:italic 700 .9rem Georgia,serif}.tip:focus-visible .ic{outline:2px solid #2A6FDB;outline-offset:2px}
+.tip .pop{display:none;position:absolute;right:0;top:30px;z-index:100;width:min(310px,80vw);padding:10px 12px;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 28px rgba(18,32,43,.22);font:400 .85rem/1.45 "Instrument Sans",system-ui,sans-serif;text-align:left}.tip:hover .pop,.tip:focus .pop{display:block}
+footer{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:.85rem;color:var(--mut);text-align:center}footer a{color:#2A5FC4;font-weight:600}
+@media(max-width:980px){main{grid-template-columns:minmax(0,1fr);grid-template-areas:"stage" "side" "info"}.modes{grid-template-columns:1fr}}
+</style></head>
+<body><div class="wrap">
+<header><h1>Interacciones de los Rayos X en Radiodiagnóstico Convencional</h1>
+<p>Modelo isométrico interactivo para estudiantes de Imagen para el Diagnóstico (TSID / IDMN). Rango de trabajo: 20–150 kVp.</p></header>
+<main>
+<section class="card stagecard"><div id="sw"><canvas id="stage" aria-label="Escena isométrica: tubo de rayos X, tejido con átomo magnificado y receptor digital"></canvas><div class="hint">Arrastra para rotar · doble clic para restablecer</div></div>
+<div class="modes" role="radiogroup" aria-label="Tipo de interacción">
+<button class="mode" role="radio" data-m="pe" style="--c:var(--pe)"><b>Efecto Fotoeléctrico</b><small>Baja energía · Alto Z</small></button>
+<button class="mode" role="radio" data-m="co" style="--c:var(--co)"><b>Efecto Compton</b><small>Energía media-alta</small></button>
+<button class="mode" role="radio" data-m="tr" style="--c:var(--tr)"><b>Transmisión Directa</b><small>Sin interacción</small></button></div>
+<div class="row" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin:10px 4px 2px"><label style="font-weight:400"><input type="checkbox" id="auto" checked> Repetir disparo automáticamente</label><span style="display:flex;gap:8px"><button id="pause" type="button" class="btn">⏸ Pausar</button><button id="fire" type="button" class="btn">Disparo manual</button></span></div></section>
+<aside class="side">
+<section class="card"><h2>Parámetros de exposición</h2>
+<div class="row"><label for="kv">Kilovoltaje (kVp)</label><output id="o-kv"></output><input type="range" id="kv" min="20" max="150" step="1" value="70"></div>
+<div class="row"><label for="ma">Miliamperaje (mA)</label><output id="o-ma"></output><input type="range" id="ma" min="10" max="800" step="10" value="200"></div>
+<div class="row"><label for="ts">Tiempo (s)</label><output id="o-ts"></output><input type="range" id="ts" min="0.005" max="2" step="0.005" value="0.05"></div>
+<div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label style="font-weight:600"><input type="checkbox" id="grid"> Rejilla antidifusora</label><select id="gr" disabled aria-label="Razón de la rejilla" style="width:auto;margin-left:auto"><option value="5">5:1</option><option value="8" selected>8:1</option><option value="12">12:1</option><option value="16">16:1</option></select></div><p class="small" id="gx"></p>
+<div class="kpis"><div class="kpi"><span>Carga (mA·s)</span><b id="o-mas"></b></div><div class="kpi"><span>Energía media del haz</span><b id="o-ef"></b></div></div>
+<div class="gauge"><i id="gi"></i></div><div class="gl"><span>Sub</span><span>Adecuada</span><span>Sobre</span></div>
+<span class="chip" id="st"></span><p class="small" id="stx"></p><button id="reset" type="button" style="width:100%;margin-top:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;font:600 .9rem 'Instrument Sans',system-ui,sans-serif;color:var(--ink);cursor:pointer">Reiniciar parámetros de exposición</button></section>
+<section class="card"><h2>Receptor digital · vista frontal</h2><canvas id="fv" width="440" height="440"></canvas>
+<div class="cap"><span class="sw" id="sw1"></span><span id="cap1"></span></div>
+<p class="small" id="ctx2"></p></section>
+<section class="card"><h2 style="display:flex;justify-content:space-between;align-items:center">Probabilidad de interacción<button class="tip" type="button" aria-label="Más información" aria-describedby="tp"><span class="ic">i</span><span class="pop" id="tp" role="tooltip"><b>Compton:</b> por átomo crece con Z, pero por gramo es casi igual en todos los tejidos; depende de la densidad electrónica y baja despacio con la energía (≈30 % entre 20 y 150 keV).<br><b>Fotoeléctrico:</b> ≈ Z³/E³, por eso domina a baja energía y en el hueso.<br><b>mA y tiempo:</b> no cambian la probabilidad de cada fotón, solo cuántos fotones hay (mAs).<br>Las barras son un modelo didáctico simplificado.</span></button></h2>
+<select id="zs" aria-label="Material"><option value="7.4">Tejido blando (Z efectivo ≈ 7,4)</option><option value="13.8">Hueso (Z efectivo ≈ 13,8)</option></select>
+<div class="bar"><span>Fotoeléctrico</span><div><i id="b-pe" style="background:var(--pe)"></i></div><em id="v-pe"></em></div>
+<div class="bar"><span>Compton</span><div><i id="b-co" style="background:var(--co)"></i></div><em id="v-co"></em></div>
+<div class="bar"><span>Transmisión</span><div><i id="b-tr" style="background:var(--tr)"></i></div><em id="v-tr"></em></div>
+<p class="small">Valores didácticos relativos: fotoeléctrico ∝ Z³/E³; Compton casi independiente de Z y de E.</p></section>
+</aside>
+<section class="card info" id="info"></section>
+</main><footer>“Web interactiva sobre interacciones de los rayos X en radiodiagnóstico convencional” por Pablo A. Sendra Lleó (2026), disponible bajo licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener noreferrer license">CC BY-NC-SA 4.0</a><br>Este material fue desarrollado con la asistencia del modelo de inteligencia artificial <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude (Anthropic)</a>, utilizando como base el framework geométrico e isométrico del repositorio de código abierto <a href="https://github.com/wheresryan22/anatomy" target="_blank" rel="noopener noreferrer">Anatomy</a>.</footer></div>
+<script>
+/* ===== Núcleo isométrico (adaptado de iso-kit.mjs: cameraOf, iso, depthOf, roundedPlan, extrude con sombreado por caras) ===== */
+const R=Math.PI/180,UNIT=Math.sqrt(1.6);
+const cam=p=>{const a=p.azimuth*R,e=p.elevation*R;return{sA:Math.sin(a),cA:Math.cos(a),sE:Math.sin(e),cE:Math.cos(e),k:p.scale*UNIT}};
+const iso=([x,y,z],p)=>{const c=cam(p);return[p.origin[0]+(x*c.sA-y*c.cA)*c.k,p.origin[1]+((x*c.cA+y*c.sA)*c.sE-z*c.cE)*c.k]};
+const depth=([x,y,z],p)=>{const c=cam(p);return(x*c.cA+y*c.sA)*c.cE+z*c.sE};
+const pathOf=(pts,cl)=>pts.map(([x,y],i)=>(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)).join('')+(cl?'Z':'');
+const circ=(cx,cy,r,n=40)=>Array.from({length:n},(_,i)=>{const a=i/n*2*Math.PI;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+function rplan({x,y,w,d,r},s=6){const rad=Math.max(0,Math.min(r,w/2,d/2)),cs=[[x+w-rad,y+rad,-90],[x+w-rad,y+d-rad,0],[x+rad,y+d-rad,90],[x+rad,y+rad,180]],o=[];for(const[cx,cy,st]of cs)for(let i=0;i<=s;i++){const a=(st+90*i/s)*R;o.push([cx+rad*Math.cos(a),cy+rad*Math.sin(a)])}return o}
+function area(p){let a=0;for(let i=0;i<p.length;i++){const[ax,ay]=p[i],[bx,by]=p[(i+1)%p.length];a+=ax*by-bx*ay}return a/2}
+const ori=p=>area(p)<0?[...p].reverse():p;
+function hull(pts){const s=[...pts].sort((a,b)=>a[0]-b[0]||a[1]-b[1]);if(s.length<3)return s;const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const lo=[];for(const p of s){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}const up=[];for(let i=s.length-1;i>=0;i--){const p=s[i];while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}return[...lo.slice(0,-1),...up.slice(0,-1)]}
+function extrude(ring,z,h,p){const n=ring.length,ccw=area(ring)>0,c=cam(p),top=ring.map(([x,y])=>iso([x,y,z+h],p)),bot=ring.map(([x,y])=>iso([x,y,z],p)),sh=[[],[],[],[]];
+ring.forEach(([ax,ay],i)=>{const j=(i+1)%n,[bx,by]=ring[j],dx=bx-ax,dy=by-ay,l=Math.hypot(dx,dy)||1,nx=ccw?dy/l:-dy/l,ny=ccw?-dx/l:dx/l;if(nx*c.cA+ny*c.sA<=1e-9)return;const lit=(-nx*c.sA+ny*c.cA+1)/2,s=Math.min(3,Math.max(0,Math.floor(lit*4)));sh[s].push(pathOf(ori([top[i],top[j],bot[j],bot[i]]),true))});
+return{fill:pathOf(hull([...top,...bot]),true),top:pathOf(ori(top),true),shades:sh.map(a=>a.join(''))}}
+
+/* ===== Estado y utilidades ===== */
+const $=s=>document.querySelector(s),f=(n,d)=>n.toFixed(d).replace('.',','),norm=v=>{const l=Math.hypot(...v)||1;return v.map(a=>a/l)};
+const cv=$('#stage'),ctx=cv.getContext('2d'),fv=$('#fv'),fx=fv.getContext('2d'),img=document.createElement('canvas');img.width=img.height=96;const ig=img.getContext('2d');
+let W=0,H=0,dpr=1,az=40,el=28,P,mode='pe',shot=performance.now(),S={den:0,con:0},rnd={th:90,psi:0,s:1};
+const SP={pe:'#fff',co:'#808080',tr:'#000'},COL={pe:'#5B3FD9',co:'#C8741A',tr:'#13806A'};
+const V=4,Y0=6,TF=.4,HY={pe:1,co:2.6},DET=-8.3;
+const calc=()=>{const kv=+$('#kv').value,mA=+$('#ma').value,s=+$('#ts').value,mas=mA*s;return{kv,mA,s,mas,E:(kv/70)**2*mas/10/(gridOn()?BUCKY[gRatio()]:1),eff:.4*kv}};
+const timing=()=>{if(mode==='tr')return{hit:null,app:(Y0-DET)/V};const h=(Y0-HY[mode])/V,s=mode==='co'?scat():null;return{hit:h,app:h+(mode==='pe'?.5:s.hit?s.L/V:.9)}};
+/* Compton: dirección de dispersión distinta en cada disparo (θ = 0–180°), energía según la fórmula de Compton */
+/* Rejilla antidifusora: acepta fotones dentro de atan(1/razón); factor de Bucky y eliminación de dispersión por razón */
+const GY=-7.7,BUCKY={5:2,8:4,12:5,16:6},GREM={5:.75,8:.85,12:.9,16:.93},gridOn=()=>$('#grid').checked,gRatio=()=>+$('#gr').value,gAng=()=>Math.atan(1/gRatio())/R;
+function grid(){prism(extrude(rplan({x:-3.9,y:DET,w:7.8,d:GY-DET,r:.05}),.2,4.6,P),['#5B6670','#6C7883','#7F8B96','#93A0AA'],'#A5B1BA',.4);ctx.save();ctx.strokeStyle='#27313A';ctx.lineWidth=1.3;ctx.globalAlpha=.8;ctx.beginPath();for(let i=0;i<=26;i++){const x=-3.8+7.6*i/26,a=iso([x,GY,.2],P),b=iso([x,GY,4.8],P);ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1])}ctx.stroke();ctx.restore()}
+function scat(){const{eff}=calc(),th=rnd.th*R,ct=Math.cos(th),st=Math.sin(th),sp=Math.sin(rnd.psi*R),u=[rnd.s*Math.cos(rnd.psi*R),0,sp],d=[u[0]*st,-ct,u[2]*st],ep=eff/511,Ep=eff/(1+ep*(1-ct)),phi=Math.atan2(1,(1+ep)*Math.tan(th/2)),ve=.9+1.3*(1-ct)/2,de=[-u[0]*Math.sin(phi),-Math.cos(phi),-u[2]*Math.sin(phi)];
+let L=d[1]<-1e-6?Math.min((HY.co-DET)/-d[1],12):9,hit=null,hw=null,blk=false;
+if(d[1]<-1e-6){const Lp=(HY.co-DET)/-d[1],x=d[0]*Lp,z=2+d[2]*Lp;if(Math.abs(x)<=3&&z>=.67&&z<=4.33){hit={u:(x+3.6)/7.2*96,v:(4.7-z)/4.4*96};hw=[x,DET,z];L=Lp;if(gridOn()&&rnd.th>gAng()){blk=true;hit=null;hw=null;L=(HY.co-GY)/-d[1]}}}
+return{th:rnd.th,d,de,ve,Ep,loss:eff-Ep,hit,hw,L,blk}}
+function newShot(){const fw=Math.random()<.4;rnd={th:fw?3+Math.round(Math.random()*11):Math.round(Math.random()*180),psi:Math.random()*70-35,s:Math.random()<.5?-1:1};if(mode==='co')$('#cap1').textContent=capTxt()}
+let paused=false,frozen=0,lastSt=0;
+const pbtn=()=>{$('#pause').textContent=paused?'▶ Reanudar':'⏸ Pausar'};
+function setPause(p){if(p===paused)return;if(p)frozen=lastSt;else shot=performance.now()-frozen*1000;paused=p;pbtn()}
+function restart(t){shot=t;paused=false;pbtn();newShot()}
+const capTxt=()=>{if(mode!=='co')return{pe:'Zona resultante: blanca (radiopaca)',tr:'Zona resultante: negra (radiolúcida)'}[mode];const s=scat();return s.hit?`Zona gris en un punto distinto al esperado (θ = ${s.th}°)`:s.blk?`Sin señal: la rejilla absorbe el fotón disperso (θ = ${s.th}°)`:`Sin señal: el fotón disperso (θ = ${s.th}°) no llega al receptor`};
+const spotA=tt=>Math.min(1,Math.max(0,(tt-timing().app)/.4));
+function proj(){const a=az*R,e=el*R,sA=Math.sin(a),cA=Math.cos(a),sE=Math.sin(e),cE=Math.cos(e),s=Math.min(W/((8*sA+22*cA)*1.33),H/(((8*cA+22*sA)*sE+5*cE)*1.4)),p={scale:s,azimuth:az,elevation:el,origin:[0,0]},c=cam(p);p.origin=[W/2+1.4*c.cA*c.k,H/2-(1.4*c.sA*c.sE-2.2*c.cE)*c.k];P=p}
+function resize(){W=$('#sw').clientWidth;dpr=Math.min(2,devicePixelRatio||1);H=Math.round(Math.max(340,Math.min(W*.64,640)));cv.style.height=H+'px';cv.width=W*dpr;cv.height=H*dpr;proj()}
+function poly(pts,fl,st,lw=1,al=1,cl=true){ctx.save();ctx.globalAlpha=al;ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));if(cl)ctx.closePath();if(fl){ctx.fillStyle=fl;ctx.fill()}if(st){ctx.strokeStyle=st;ctx.lineWidth=lw;ctx.lineJoin='round';ctx.stroke()}ctx.restore()}
+function circle(x,y,r,c,glow=0,al=1){ctx.save();ctx.globalAlpha=al;ctx.shadowColor=c;ctx.shadowBlur=glow;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=c;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#fff';ctx.lineWidth=1.2;ctx.stroke();ctx.restore()}
+function prism(e,cols,top,al=1,ln='#1c2b36'){ctx.save();ctx.globalAlpha=al;ctx.fillStyle=cols[1];ctx.fill(new Path2D(e.fill));cols.forEach((c,i)=>{ctx.fillStyle=c;ctx.fill(new Path2D(e.shades[i]))});ctx.fillStyle=top;ctx.fill(new Path2D(e.top));ctx.strokeStyle=ln;ctx.lineWidth=1.2;ctx.lineJoin='round';ctx.stroke(new Path2D(e.fill));ctx.stroke(new Path2D(e.top));ctx.restore()}
+const ringY=(y,r,z0,n=28)=>Array.from({length:n},(_,i)=>{const a=i/n*6.2832;return[r*Math.cos(a),y,z0+r*Math.sin(a)]});
+function hcyl(y0,y1,r,z0,col,hi){poly(hull([...ringY(y0,r,z0),...ringY(y1,r,z0)].map(q=>iso(q,P))),col,'#1c2b36',1.2);poly(hull([...ringY(y0,r*.5,z0+r*.45),...ringY(y1,r*.5,z0+r*.45)].map(q=>iso(q,P))),hi)}
+function tag(t,pos,dx,dy,col='#12202B',al=1){const[x,y]=iso(pos,P);ctx.save();ctx.globalAlpha=al;ctx.font='600 12px "Instrument Sans",system-ui,sans-serif';const w=ctx.measureText(t).width+14,h=22;let tx=Math.min(W-w/2-4,Math.max(w/2+4,x+dx)),ty=Math.min(H-14,Math.max(14,y+dy));ctx.strokeStyle=col;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke();ctx.fillStyle='rgba(255,255,255,.94)';ctx.beginPath();ctx.roundRect(tx-w/2,ty-h/2,w,h,6);ctx.fill();ctx.stroke();ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,tx,ty+.5);ctx.restore()}
+function photon(p,d,lam,col){const pr=norm([-d[1],d[0],0]);const k=cam(P).k,pts=[];for(let s=0;s<=1.8;s+=.05){const w=Math.sin(s/lam*6.283)*.2*(1-s/2.6);pts.push(iso([p[0]-d[0]*s+pr[0]*w,p[1]-d[1]*s+pr[1]*w,p[2]-d[2]*s+pr[2]*w],P))}poly(pts,null,col,2.6,1,false);const[x,y]=iso(p,P);circle(x,y,.2*k,col,12)}
+function elec(hp,d,v,dt,al=1){const life=3.2;if(dt>life)return false;const p=hp.map((a,i)=>a+d[i]*v*dt),k=cam(P).k,[x,y]=iso(p,P),[x0,y0]=iso(hp,P);ctx.save();ctx.globalAlpha=al*(1-dt/life);ctx.strokeStyle='#1F6FEB';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x,y);ctx.stroke();ctx.restore();circle(x,y,.2*k,'#1F6FEB',10,al*(1-dt/life));return p}
+
+/* ===== Imagen del receptor (modelo físico simple) ===== */
+function renderImg(){const{kv,E}=calc(),fg=(.03+.2*Math.min(1,Math.max(0,(kv-50)/100)))*(gridOn()?1-GREM[gRatio()]:1),Ts=Math.exp(-.87*(70/kv)**1.4),Tb=Math.exp(-2.9*(70/kv)**1.9),d=ig.createImageData(96,96);let sum=0;
+const gv=T=>255*Math.exp(-2*E*(T*(1-fg)+fg*.45));
+for(let y=0;y<96;y++)for(let x=0;x<96;x++){let T=1;const ex=(x-48)/38,ey=(y-50)/42,inE=ex*ex+ey*ey<1;if(inE)T=Ts;if(inE&&Math.abs(x-48)<7)T=Tb;if((x-68)**2+(y-62)**2<40)T=Ts*.78;
+const X=E*(T*(1-fg)+fg*.45),h=Math.sin(x*12.9898+y*78.233+kv*.1)*43758.5453,n=h-Math.floor(h)-.5;
+const g=Math.max(0,Math.min(255,255*Math.exp(-2*X)+n*60/Math.sqrt(1+X*60))),o=(y*96+x)*4;d.data[o]=d.data[o+1]=d.data[o+2]=g;d.data[o+3]=255;sum+=g}
+ig.putImageData(d,0,0);S.den=100*(1-sum/9216/255);S.con=Math.abs(gv(Ts)-gv(Tb))/2.55}
+function spot(c,a){if(a<=0)return;let x=48,y=59;if(mode==='co'){const s=scat();c.save();c.globalAlpha=a;c.setLineDash([2,2]);c.strokeStyle=COL.co;c.lineWidth=1;c.strokeRect(40.5,51.5,15,15);c.restore();if(!s.hit)return;x=s.hit.u;y=s.hit.v}c.save();c.globalAlpha=a;c.fillStyle=SP[mode];c.fillRect(x-8,y-8,16,16);c.lineWidth=1.6;c.strokeStyle=COL[mode];c.strokeRect(x-9.2,y-9.2,18.4,18.4);c.restore()}
+
+/* ===== Escena ===== */
+const SH=[{r:1,b:[0,Math.PI],w:2.6},{r:1.8,b:[0,1.57,3.14,4.71],w:1.7},{r:2.6,b:[.8,3.94],w:1.1}];
+function atom(tt,tm){SH.forEach(s=>poly(circ(0,0,s.r,60).map(([x,y])=>iso([x,y,2],P)),null,'rgba(31,111,235,.4)',1.3));
+const k=cam(P).k,it=[[.12,.1,.05],[-.1,.1,-.08],[.05,-.14,.1],[-.12,-.06,.12],[.1,.12,-.1],[-.04,0,.2],[0,-.1,-.15]].map(([x,y,z],i)=>({p:[x,y,2+z],r:.2,c:i%2?'#E5484D':'#8B98A5'}));
+SH.forEach((s,si)=>s.b.forEach((b,i)=>{const tg=i===0&&((mode==='pe'&&si===0)||(mode==='co'&&si===2));let th=b+s.w*tt;if(tg){if(tt>=tm.hit)return;th=Math.PI/2-s.w*(tm.hit-tt)}it.push({p:[s.r*Math.cos(th),s.r*Math.sin(th),2],r:.17,c:'#1F6FEB'})}));
+it.sort((a,b)=>depth(a.p,P)-depth(b.p,P)).forEach(o=>{const[x,y]=iso(o.p,P);circle(x,y,o.r*k,o.c)})}
+
+function draw(st){const tt=st-TF,{kv,mas,eff}=calc(),hue=275-(kv-20)/130*95,col=`hsl(${hue} 85% 45%)`,tm=timing(),k=cam(P).k;
+ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+poly([[-7,-11,0],[7,-11,0],[7,11,0],[-7,11,0]].map(q=>iso(q,P)),'#E0E8EE','#C9D5DD');
+ctx.strokeStyle='#D0DBE2';ctx.lineWidth=1;ctx.beginPath();const sg=(a,b)=>{const p=iso(a,P),q=iso(b,P);ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1])};for(let i=-6;i<=6;i+=2)sg([i,-11,0],[i,11,0]);for(let j=-10;j<=10;j+=2)sg([-7,j,0],[7,j,0]);ctx.stroke();
+/* receptor */
+prism(extrude(rplan({x:-4,y:-9.2,w:8,d:.9,r:.2}),0,5,P),['#6F7E8B','#8796A2','#A4B1BC','#C3CDD5'],'#D6DEE4');
+const q=(u,v)=>iso([-3.6+7.2*u/96,DET,4.7-4.4*v/96],P),a=q(0,0),b=q(96,0),c=q(0,96);
+ctx.save();ctx.transform((b[0]-a[0])/96,(b[1]-a[1])/96,(c[0]-a[0])/96,(c[1]-a[1])/96,a[0],a[1]);ctx.imageSmoothingEnabled=false;ctx.drawImage(img,0,0);spot(ctx,spotA(tt));ctx.restore();
+poly([a,b,q(96,96),c],null,'#1c2b36',1.5);
+/* haz */
+const al=.07+.33*Math.min(1,Math.log10(1+mas)/2.4);
+poly(hull([...ringY(5,.2,2),...ringY(DET,2,2)].map(p=>iso(p,P))),`hsla(${hue},90%,55%,${al})`,`hsla(${hue},90%,45%,.55)`,1);
+if(gridOn())grid();
+/* tejido */
+prism(extrude(rplan({x:-3.4,y:-3.4,w:6.8,d:6.8,r:.5}),0,4,P),['#E8B7A6','#EFC6B6','#F4D5C8','#F8E3DA'],'#FBEDE6',.45,'#B77D6C');
+atom(tt,tm);
+/* tubo */
+prism(extrude(rplan({x:-1.6,y:6,w:3.2,d:3.2,r:.3}),0,.15,P),['#6F7E8B','#8796A2','#A4B1BC','#C3CDD5'],'#C3CDD5');
+prism(extrude(circ(0,7.6,.45,16),.15,.3,P),['#56656F','#66767F','#7A8993','#8E9CA6'],'#9AA8B1');
+hcyl(10.6,12,.35,2.6,'#3E4A54','rgba(255,255,255,.3)');hcyl(9.8,10.6,1.25,2,'#6F7E8B','rgba(255,255,255,.35)');hcyl(5.4,9.8,1.6,2,'#9AA9B6','rgba(255,255,255,.5)');
+[6.4,8.2].forEach(y=>poly(ringY(y,1.6,2,40).map(p=>iso(p,P)),null,'#5E6E7B',1.4));
+prism(extrude(rplan({x:-1.2,y:4.6,w:2.4,d:.8,r:.15}),.9,2.2,P),['#4B5A66','#5E6E7B','#74848F','#8A9AA5'],'#97A6B0');
+{const[x,y]=iso([0,4.6,2],P);circle(x,y,.45*k,`hsla(${hue},95%,60%,.75)`,16)}
+/* fotones y electrones */
+const hp=[0,HY[mode]||0,2],lam=1.9-(kv-20)/130*1.3,inc=[0,-1,0];
+if(tt>0&&(mode==='tr'||tt<tm.hit)){const y=Y0-V*tt;if(y>DET){photon([0,y,2],inc,lam,col);tag('Fotón incidente · '+f(eff,0)+' keV',[0,y,2],-70,-52,col)}}
+if(mode!=='tr'&&tt>=tm.hit){const dt=tt-tm.hit,[hx,hy]=iso(hp,P);
+if(dt<.5){ctx.save();ctx.globalAlpha=1-dt/.5;ctx.strokeStyle=COL[mode];ctx.lineWidth=3;ctx.beginPath();ctx.arc(hx,hy,k*(.2+dt*2.2),0,7);ctx.stroke();ctx.restore()}
+if(mode==='pe'){const p=elec(hp,norm([.75,-.35,.55]),1.7,dt);if(p)tag('Electrón expulsado',p,60,-34,'#1F6FEB');
+ctx.save();ctx.setLineDash([4,3]);ctx.strokeStyle='#1F6FEB';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(hx,hy,.2*k,0,7);ctx.stroke();ctx.restore();
+tag(dt<1.6?'Absorción total del fotón':'Vacante en capa K',hp,-92,48,COL.pe)}
+else{const sc=scat(),p=elec(hp,sc.de,sc.ve,dt);if(p)tag('Electrón Compton (retroceso)',p,80,30,'#1F6FEB');
+const sd=sc.d,dist=V*dt,mx=sc.L;ctx.save();ctx.setLineDash([6,5]);ctx.strokeStyle=COL.co;ctx.globalAlpha=.55;ctx.beginPath();const e2=iso(hp.map((v,i)=>v+sd[i]*mx),P);ctx.moveTo(hx,hy);ctx.lineTo(e2[0],e2[1]);ctx.stroke();ctx.restore();
+if(dist<mx){const sp=hp.map((v,i)=>v+sd[i]*dist);photon(sp,sd,lam*(1.15+.9*(1-Math.cos(sc.th*R))/2),'#D12F5A');tag('Fotón disperso · E′ = '+f(sc.Ep,1)+' keV',sp,-60,-34,'#D12F5A')}if(sc.blk&&dist>=mx&&dist<mx+3){const bp=hp.map((v,i)=>v+sd[i]*mx),[bx,by]=iso(bp,P),r=Math.min(1,(dist-mx)/1.2);ctx.save();ctx.globalAlpha=1-r*.8;ctx.strokeStyle='#D12F5A';ctx.lineWidth=3;ctx.beginPath();ctx.arc(bx,by,k*(.2+r*.9),0,7);ctx.stroke();ctx.restore();tag('Absorbido por la rejilla',bp,-70,-36,'#D12F5A')}
+tag('θ = '+sc.th+'° · pierde '+f(sc.loss,2)+' keV'+(sc.th>90?' · riesgo laboral':''),hp.map((v,i)=>v+sd[i]*Math.min(5.5,mx*.6)),-20,-30,'#D12F5A')}}
+const fp=mode==='tr'?[0,DET,2]:mode==='co'&&scat().hit?scat().hw:null;if(fp&&tt>=tm.app&&tt<tm.app+.6){const[x,y]=iso(fp,P),r=(tt-tm.app)/.6;ctx.save();ctx.globalAlpha=1-r;ctx.strokeStyle=COL[mode];ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,k*(.3+r*1.6),0,7);ctx.stroke();ctx.restore()}
+const sa=spotA(tt);if(sa>0){const s2=mode==='co'?scat():null;tag(mode==='co'?(s2.hit?'Zona gris · punto distinto al esperado':(s2.blk?'Sin señal: absorbido por la rejilla':'Sin señal: el fotón disperso no llega')):{pe:'Zona blanca · radiopaca',tr:'Zona negra · radiolúcida'}[mode],s2&&s2.hit?s2.hw:[0,DET,2],70,52,COL[mode],sa)}
+/* etiquetas fijas */
+if(gridOn())tag('Rejilla antidifusora '+gRatio()+':1',[3.8,-7.7,1],70,36,'#4B5A66');tag('Tubo de rayos X',[0,9.4,3.6],-62,-34);tag('Receptor digital (chasis virtual)',[3.6,DET,4.7],20,-36);tag('Tejido biológico',[3.4,3.4,0],62,40);tag('Átomo magnificado',[0,0,4],0,-62);
+tag('Núcleo',[0,0,2],70,-58,'#B3303A');tag('Capa K',[0,-1,2],74,56,'#1F6FEB');tag('Capa L',[-1.8,0,2],-86,38,'#1F6FEB');tag('Capa M (externa)',[-2.6,0,2],-70,-50,'#1F6FEB')}
+
+function drawFV(st){fx.setTransform(1,0,0,1,0,0);fx.imageSmoothingEnabled=false;fx.clearRect(0,0,440,440);fx.save();fx.scale(440/96,440/96);fx.drawImage(img,0,0);spot(fx,spotA(st-TF));fx.restore()}
+
+/* ===== Interfaz ===== */
+const INFO={
+pe:{t:'Efecto Fotoeléctrico',s:'Baja energía · Alto Z',c:'--pe',a:'El fotón cede toda su energía a un electrón de la capa K (la energía debe superar su ligadura). El electrón sale expulsado y queda una vacante que se rellena con radiación característica de baja energía. Probabilidad ∝ Z³/E³.',b:'Píxel blanco (radiopaco): ningún fotón llega al receptor. Es la base del contraste entre hueso, calcio o contraste yodado y tejido blando.',r:'No genera radiación dispersa útil, pero toda la energía se deposita en el paciente: aumenta la dosis. Menos kVp = más dosis absorbida.'},
+co:{t:'Efecto Compton',s:'Energía media-alta',c:'--co',a:'El fotón choca con un electrón poco ligado de la capa externa. El electrón sale expulsado y el fotón continúa con menos energía y otra dirección. Casi no depende de Z; depende de la densidad electrónica. El ángulo de dispersión (0–180°) cambia en cada disparo: cuanto mayor es, más energía pierde el fotón y más velocidad se lleva el electrón.',b:'Píxel gris (niebla base): si el fotón disperso llega al receptor, lo hace en un punto distinto al esperado y vela la imagen, reduciendo el contraste. Si sale en otra dirección, no deja señal.',r:'Es la principal fuente de radiación dispersa y de dosis ocupacional. Se controla con colimación, rejilla antidifusora y distancia.'},
+tr:{t:'Transmisión Directa',s:'Sin interacción',c:'--tr',a:'El fotón atraviesa el átomo sin atenuarse y conserva su energía y su trayectoria. La probabilidad aumenta al subir kVp y al disminuir el espesor o el Z del medio.',b:'Píxel negro (radiolúcido): el fotón llega íntegro al receptor y registra el máximo de señal, como el aire o el pulmón.',r:'No aporta dosis al paciente en esa interacción, pero sí contribuye a la señal. Más fotones transmitidos = imagen más oscura (mayor densidad).'}};
+function probs(){const{eff}=calc(),Z=+$('#zs').value,pe=(Z/7.4)**2.5*(30/eff)**3.1,tr=Math.exp(-.12*(pe+1)*(Z/7.4)**.8*3),it=1-tr;return{pe:it*pe/(pe+1),co:it/(pe+1),tr}}
+function ui(){const c=calc();$('#o-kv').textContent=c.kv+' kVp';$('#o-ma').textContent=c.mA+' mA';$('#o-ts').textContent=f(c.s,3)+' s';$('#o-mas').textContent=f(c.mas,1);$('#o-ef').textContent='≈ '+f(c.eff,0)+' keV';
+renderImg();{const B=BUCKY[gRatio()];$('#gx').textContent=gridOn()?`Factor de rejilla (Bucky) ×${B}: para igual densidad hacen falta ${f(c.mas*B,1)} mAs, es decir, ${B} veces más dosis.`:''}
+const[sl,cl,tx]=c.E<.45?['Subexposición','sub','Imagen clara y con moteado cuántico: llegan pocos fotones al receptor. Sube mAs o kVp.']:c.E>2.2?['Sobreexposición (quemado)','sob','Imagen saturada y oscura: se pierde información en las zonas de alta señal y aumenta la dosis. Reduce mAs o kVp.']:['Exposición adecuada','ok','Densidad correcta: hay señal suficiente en todas las estructuras.'];
+$('#st').className='chip '+cl;$('#st').textContent=sl+' · densidad '+f(S.den,0)+' %';$('#stx').textContent=tx;
+$('#gi').style.left=Math.min(98,Math.max(2,(Math.log2(Math.max(c.E,.001))+4)/8*100))+'%';
+$('#ctx2').textContent='Contraste hueso/tejido blando: '+f(S.con,0)+' %. '+(c.kv<55?'Alto contraste (escala corta): predomina el fotoeléctrico.':c.kv<=90?'Contraste intermedio: mezcla de ambos efectos.':'Bajo contraste (escala larga): predomina Compton, más dispersión.');
+const pr=probs();['pe','co','tr'].forEach(k=>{$('#b-'+k).style.width=pr[k]*100+'%';$('#v-'+k).textContent=f(pr[k]*100,0)+'%'});
+const I=INFO[mode],zn=+$('#zs').value<10?'tejido blando':'hueso',dom=pr.pe>pr.co?'fotoeléctrico':'Compton';
+$('#info').innerHTML=`<h2 style="color:var(${I.c})">${I.t} <span>${I.s}</span></h2><div class="cols" style="--c:var(${I.c})"><div><h3>Qué ocurre</h3><p>${I.a}</p></div><div><h3>Qué se ve en el detector</h3><p>${I.b}</p></div><div><h3>Radioprotección</h3><p>${I.r}</p></div><div><h3>Con tus parámetros</h3><p>A ${c.kv} kVp (energía media ≈ ${f(c.eff,0)} keV) en ${zn}, entre los fotones que interactúan predomina el efecto ${dom}; ${f(pr.tr*100,0)} % se transmite.${gridOn()?` Con rejilla ${gRatio()}:1 solo pasan los fotones a menos de ±${f(gAng(),1)}° del eje: se elimina gran parte de la dispersión y se necesita ×${BUCKY[gRatio()]} de exposición.`:''}</p></div></div><p class="note">Alcance: radiología convencional (20–150 kVp). Se excluyen producción de pares (&gt; 1,02 MeV) y fotodesintegración (&gt; 10 MeV), que no ocurren en este rango.<br>Esto es solo un modelo simplificado. Los valores incluidos son solo orientativos y de carácter didáctico.</p>`;
+$('#sw1').style.cssText=`--c:${COL[mode]};--b:${SP[mode]}`;$('#cap1').textContent=capTxt()}
+function setMode(m){mode=m;document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-checked',b.dataset.m===m));restart(performance.now());ui()}
+document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+['kv','ma','ts','zs','gr'].forEach(i=>$('#'+i).addEventListener('input',ui));$('#grid').addEventListener('change',()=>{$('#gr').disabled=!$('#grid').checked;ui()});$('#fire').onclick=()=>restart(performance.now());
+let drag=null;cv.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(!drag)return;az=Math.min(90,Math.max(0,az+(e.clientX-drag[0])*.35));if(e.pointerType==='mouse')el=Math.min(90,Math.max(0,el-(e.clientY-drag[1])*.3));drag=[e.clientX,e.clientY];proj()});
+cv.addEventListener('pointerup',()=>drag=null);cv.addEventListener('dblclick',()=>{az=40;el=28;proj()});
+function frame(now){let st=paused?frozen:(now-shot)/1000;if(!paused&&st>8.5){if($('#auto').checked){restart(now);st=0}else st=8.5}lastSt=st;draw(st);drawFV(st);requestAnimationFrame(frame)}
+$('#pause').onclick=()=>setPause(!paused);$('#reset').onclick=()=>{$('#kv').value=70;$('#ma').value=200;$('#ts').value=.05;$('#grid').checked=false;$('#gr').value=8;$('#gr').disabled=true;ui()};addEventListener('resize',resize);resize();setMode('pe');requestAnimationFrame(frame);
+</script></body></html>
