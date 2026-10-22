@@ -27,7 +27,7 @@ En el efecto Compton, el ángulo de dispersión (0–180°) es distinto en cada 
 ### Panel de control
 
 - **kVp** (20–150), **mA** (10–800) y **tiempo** (0,005–2 s), con la carga en mAs y la energía media del haz.
-- **Indicador de exposición**: subexposición, exposición adecuada o sobreexposición (quemado), con la densidad media de la imagen y el contraste entre hueso y tejido blando.
+- **Indicador de exposición**: subexposición, exposición adecuada o sobreexposición (quemado), con la densidad media y el contraste de la imagen (diferencia de señal entre hueso y tejido blando en el receptor: baja al subir el kVp, sube con la rejilla y no depende de los mAs).
 - **Rejilla antidifusora** (5:1, 8:1, 12:1 o 16:1): bloquea los fotones dispersos cuyo ángulo supera el de aceptación de la rejilla, reduce la niebla de la imagen y aplica el factor de Bucky, por lo que muestra los mAs necesarios y la dosis relativa.
 - **Probabilidad de interacción** (fotoeléctrico, Compton y transmisión) para tejido blando o hueso, con un botón de información «i».
 - **Vista frontal del receptor** ampliada.
@@ -80,10 +80,10 @@ Principales simplificaciones:
 - **Alcance:** solo radiología convencional (20–150 kVp). Se excluyen la producción de pares (> 1,02 MeV) y la fotodesintegración (> 10 MeV), que no ocurren en este rango. No se modela el efecto Rayleigh.
 - **Energía media del haz:** se aproxima como 0,4 × kVp.
 - **Índice de exposición:** E = (kVp / 70)² · (mAs / 10), con 70 kVp y 10 mAs como referencia. Hay subexposición con E < 0,45 y sobreexposición con E > 2,2.
-- **Imagen del receptor:** fantoma de 96 × 96 píxeles con transmisión dependiente del kVp, niebla por dispersión que aumenta con el kVp y ruido cuántico que disminuye con la exposición.
+- **Imagen del receptor:** fantoma de 96 × 96 píxeles con transmisión dependiente del kVp, radiación dispersa (relación dispersa/primaria) que aumenta con el kVp y se reduce con la rejilla y ruido cuántico que disminuye con la exposición.
 - **Probabilidades de interacción:** fotoeléctrico ≈ (Z/7,4)^2,5 · (30/E)^3,1 respecto a Compton, que se toma constante. El efecto fotoeléctrico crece con Z³/E³ en la teoría, mientras que Compton depende de la densidad electrónica y disminuye lentamente con la energía.
 - **Efecto Compton:** la energía final del fotón disperso sigue la fórmula de Compton, y el ángulo del electrón de retroceso se calcula a partir de ella. El plano de dispersión se sortea en cada disparo. Para que se vea con frecuencia el caso en que el fotón llega al receptor, el 40 % de los disparos se sortea entre 3° y 14°. La diferencia de longitud de onda dibujada entre el fotón incidente y el disperso está exagerada visualmente.
-- **Rejilla:** acepta fotones a menos de atan(1/razón) respecto al eje. Se usa un factor de Bucky de 2, 4, 5 y 6 para las razones 5:1, 8:1, 12:1 y 16:1, y una eliminación de dispersión del 75, 85, 90 y 93 %. No se modelan el centrado ni la distancia focal.
+- **Rejilla:** acepta fotones a menos de atan(1/razón) respecto al eje. Se usa un factor de Bucky de 2, 4, 5 y 6 para las razones 5:1, 8:1, 12:1 y 16:1, y una eliminación de dispersión del 70, 82, 90 y 95 %. No se modelan el centrado ni la distancia focal.
 - **Mismo mA, misma probabilidad:** el mA y el tiempo cambian cuántos fotones hay, no la probabilidad de interacción de cada fotón.
 
 ## Licencia
@@ -94,7 +94,4 @@ Principales simplificaciones:
 
 Este material fue desarrollado con la asistencia del modelo de inteligencia artificial [Claude (Anthropic)](https://claude.ai), utilizando como base el framework geométrico e isométrico del repositorio de código abierto [Anatomy](https://github.com/wheresryan22/anatomy).
 
-## License
-Este proyecto está disponible bajo la licencia Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional (CC BY-NC-SA 4.0).
-
-El código de esta aplicación web interactiva incluye componentes y herramientas matemáticas adaptadas del repositorio "Anatomy" de Ryan (@wheresryan22), originalmente publicado bajo la Licencia MIT.
+> Antes de publicar, comprueba que la licencia del repositorio Anatomy es compatible con CC BY-NC-SA 4.0 y conserva los avisos de copyright que exija.

@@ -80,7 +80,7 @@ footer{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-si
 <p class="small">Valores didácticos relativos: fotoeléctrico ∝ Z³/E³; Compton casi independiente de Z y de E.</p></section>
 </aside>
 <section class="card info" id="info"></section>
-</main><footer><a href="https://sendroski22.github.io/simulador-rayos-x/" target="_blank" rel="noopener noreferrer license">“Web interactiva sobre interacciones de los rayos X en radiodiagnóstico convencional”</a> por Pablo A. Sendra Lleó (2026), disponible bajo licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener noreferrer license">CC BY-NC-SA 4.0</a><br>Este material fue desarrollado con la asistencia del modelo de inteligencia artificial <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude (Anthropic)</a>, utilizando como base el framework geométrico e isométrico del repositorio de código abierto <a href="https://github.com/wheresryan22/anatomy" target="_blank" rel="noopener noreferrer">Anatomy</a>.</footer></div>
+</main><footer>“Web interactiva sobre interacciones de los rayos X en radiodiagnóstico convencional” por Pablo A. Sendra Lleó (2026), disponible bajo licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener noreferrer license">CC BY-NC-SA 4.0</a><br>Este material fue desarrollado con la asistencia del modelo de inteligencia artificial <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude (Anthropic)</a>, utilizando como base el framework geométrico e isométrico del repositorio de código abierto <a href="https://github.com/wheresryan22/anatomy" target="_blank" rel="noopener noreferrer">Anatomy</a>.</footer></div>
 <script>
 /* ===== Núcleo isométrico (adaptado de iso-kit.mjs: cameraOf, iso, depthOf, roundedPlan, extrude con sombreado por caras) ===== */
 const R=Math.PI/180,UNIT=Math.sqrt(1.6);
@@ -107,7 +107,7 @@ const calc=()=>{const kv=+$('#kv').value,mA=+$('#ma').value,s=+$('#ts').value,ma
 const timing=()=>{if(mode==='tr')return{hit:null,app:(Y0-DET)/V};const h=(Y0-HY[mode])/V,s=mode==='co'?scat():null;return{hit:h,app:h+(mode==='pe'?.5:s.hit?s.L/V:.9)}};
 /* Compton: dirección de dispersión distinta en cada disparo (θ = 0–180°), energía según la fórmula de Compton */
 /* Rejilla antidifusora: acepta fotones dentro de atan(1/razón); factor de Bucky y eliminación de dispersión por razón */
-const GY=-7.7,BUCKY={5:2,8:4,12:5,16:6},GREM={5:.75,8:.85,12:.9,16:.93},gridOn=()=>$('#grid').checked,gRatio=()=>+$('#gr').value,gAng=()=>Math.atan(1/gRatio())/R;
+const GY=-7.7,BUCKY={5:2,8:4,12:5,16:6},GREM={5:.7,8:.82,12:.9,16:.95},gridOn=()=>$('#grid').checked,gRatio=()=>+$('#gr').value,gAng=()=>Math.atan(1/gRatio())/R;
 function grid(){prism(extrude(rplan({x:-3.9,y:DET,w:7.8,d:GY-DET,r:.05}),.2,4.6,P),['#5B6670','#6C7883','#7F8B96','#93A0AA'],'#A5B1BA',.4);ctx.save();ctx.strokeStyle='#27313A';ctx.lineWidth=1.3;ctx.globalAlpha=.8;ctx.beginPath();for(let i=0;i<=26;i++){const x=-3.8+7.6*i/26,a=iso([x,GY,.2],P),b=iso([x,GY,4.8],P);ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1])}ctx.stroke();ctx.restore()}
 function scat(){const{eff}=calc(),th=rnd.th*R,ct=Math.cos(th),st=Math.sin(th),sp=Math.sin(rnd.psi*R),u=[rnd.s*Math.cos(rnd.psi*R),0,sp],d=[u[0]*st,-ct,u[2]*st],ep=eff/511,Ep=eff/(1+ep*(1-ct)),phi=Math.atan2(1,(1+ep)*Math.tan(th/2)),ve=.9+1.3*(1-ct)/2,de=[-u[0]*Math.sin(phi),-Math.cos(phi),-u[2]*Math.sin(phi)];
 let L=d[1]<-1e-6?Math.min((HY.co-DET)/-d[1],12):9,hit=null,hw=null,blk=false;
@@ -132,12 +132,12 @@ function photon(p,d,lam,col){const pr=norm([-d[1],d[0],0]);const k=cam(P).k,pts=
 function elec(hp,d,v,dt,al=1){const life=3.2;if(dt>life)return false;const p=hp.map((a,i)=>a+d[i]*v*dt),k=cam(P).k,[x,y]=iso(p,P),[x0,y0]=iso(hp,P);ctx.save();ctx.globalAlpha=al*(1-dt/life);ctx.strokeStyle='#1F6FEB';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x,y);ctx.stroke();ctx.restore();circle(x,y,.2*k,'#1F6FEB',10,al*(1-dt/life));return p}
 
 /* ===== Imagen del receptor (modelo físico simple) ===== */
-function renderImg(){const{kv,E}=calc(),fg=(.03+.2*Math.min(1,Math.max(0,(kv-50)/100)))*(gridOn()?1-GREM[gRatio()]:1),Ts=Math.exp(-.87*(70/kv)**1.4),Tb=Math.exp(-2.9*(70/kv)**1.9),d=ig.createImageData(96,96);let sum=0;
-const gv=T=>255*Math.exp(-2*E*(T*(1-fg)+fg*.45));
+function renderImg(){const{kv,E}=calc(),fg=(.05+.35*Math.min(1,Math.max(0,(kv-50)/100)))*(gridOn()?1-GREM[gRatio()]:1),Ts=Math.exp(-.87*(70/kv)**1.4),Tb=Math.exp(-2.9*(70/kv)**1.9),d=ig.createImageData(96,96);let sum=0;
+
 for(let y=0;y<96;y++)for(let x=0;x<96;x++){let T=1;const ex=(x-48)/38,ey=(y-50)/42,inE=ex*ex+ey*ey<1;if(inE)T=Ts;if(inE&&Math.abs(x-48)<7)T=Tb;if((x-68)**2+(y-62)**2<40)T=Ts*.78;
-const X=E*(T*(1-fg)+fg*.45),h=Math.sin(x*12.9898+y*78.233+kv*.1)*43758.5453,n=h-Math.floor(h)-.5;
+const X=E*(T+fg*Ts),h=Math.sin(x*12.9898+y*78.233+kv*.1)*43758.5453,n=h-Math.floor(h)-.5;
 const g=Math.max(0,Math.min(255,255*Math.exp(-2*X)+n*60/Math.sqrt(1+X*60))),o=(y*96+x)*4;d.data[o]=d.data[o+1]=d.data[o+2]=g;d.data[o+3]=255;sum+=g}
-ig.putImageData(d,0,0);S.den=100*(1-sum/9216/255);S.con=Math.abs(gv(Ts)-gv(Tb))/2.55}
+ig.putImageData(d,0,0);S.den=100*(1-sum/9216/255);S.con=100*(Ts-Tb)/(Ts+Tb+2*fg*Ts)}
 function spot(c,a){if(a<=0)return;let x=48,y=59;if(mode==='co'){const s=scat();c.save();c.globalAlpha=a;c.setLineDash([2,2]);c.strokeStyle=COL.co;c.lineWidth=1;c.strokeRect(40.5,51.5,15,15);c.restore();if(!s.hit)return;x=s.hit.u;y=s.hit.v}c.save();c.globalAlpha=a;c.fillStyle=SP[mode];c.fillRect(x-8,y-8,16,16);c.lineWidth=1.6;c.strokeStyle=COL[mode];c.strokeRect(x-9.2,y-9.2,18.4,18.4);c.restore()}
 
 /* ===== Escena ===== */
@@ -201,7 +201,7 @@ renderImg();{const B=BUCKY[gRatio()];$('#gx').textContent=gridOn()?`Factor de re
 const[sl,cl,tx]=c.E<.45?['Subexposición','sub','Imagen clara y con moteado cuántico: llegan pocos fotones al receptor. Sube mAs o kVp.']:c.E>2.2?['Sobreexposición (quemado)','sob','Imagen saturada y oscura: se pierde información en las zonas de alta señal y aumenta la dosis. Reduce mAs o kVp.']:['Exposición adecuada','ok','Densidad correcta: hay señal suficiente en todas las estructuras.'];
 $('#st').className='chip '+cl;$('#st').textContent=sl+' · densidad '+f(S.den,0)+' %';$('#stx').textContent=tx;
 $('#gi').style.left=Math.min(98,Math.max(2,(Math.log2(Math.max(c.E,.001))+4)/8*100))+'%';
-$('#ctx2').textContent='Contraste hueso/tejido blando: '+f(S.con,0)+' %. '+(c.kv<55?'Alto contraste (escala corta): predomina el fotoeléctrico.':c.kv<=90?'Contraste intermedio: mezcla de ambos efectos.':'Bajo contraste (escala larga): predomina Compton, más dispersión.');
+{const ql=S.con>=55?'alto':S.con>=30?'moderado':'bajo',ex=c.E<.45?' Atención: la imagen está subexpuesta (clara y con ruido), así que ese contraste no se aprecia bien: sube los mAs.':c.E>2.2?' Atención: la imagen está sobreexpuesta (quemada), así que ese contraste no se aprecia bien: baja los mAs.':'',why=c.kv<55?'Escala corta (pocos tonos de gris): predomina el fotoeléctrico.':c.kv<=90?'Escala intermedia: mezcla de fotoeléctrico y Compton.':'Escala larga (muchos tonos de gris): predomina Compton'+(gridOn()?'.':' y la dispersión vela la imagen; la rejilla ayuda.');$('#ctx2').textContent=`Contraste de la imagen (diferencia de señal hueso/tejido blando que llega al receptor): ${f(S.con,0)} % · ${ql}. ${why}${ex}`}
 const pr=probs();['pe','co','tr'].forEach(k=>{$('#b-'+k).style.width=pr[k]*100+'%';$('#v-'+k).textContent=f(pr[k]*100,0)+'%'});
 const I=INFO[mode],zn=+$('#zs').value<10?'tejido blando':'hueso',dom=pr.pe>pr.co?'fotoeléctrico':'Compton';
 $('#info').innerHTML=`<h2 style="color:var(${I.c})">${I.t} <span>${I.s}</span></h2><div class="cols" style="--c:var(${I.c})"><div><h3>Qué ocurre</h3><p>${I.a}</p></div><div><h3>Qué se ve en el detector</h3><p>${I.b}</p></div><div><h3>Radioprotección</h3><p>${I.r}</p></div><div><h3>Con tus parámetros</h3><p>A ${c.kv} kVp (energía media ≈ ${f(c.eff,0)} keV) en ${zn}, entre los fotones que interactúan predomina el efecto ${dom}; ${f(pr.tr*100,0)} % se transmite.${gridOn()?` Con rejilla ${gRatio()}:1 solo pasan los fotones a menos de ±${f(gAng(),1)}° del eje: se elimina gran parte de la dispersión y se necesita ×${BUCKY[gRatio()]} de exposición.`:''}</p></div></div><p class="note">Alcance: radiología convencional (20–150 kVp). Se excluyen producción de pares (&gt; 1,02 MeV) y fotodesintegración (&gt; 10 MeV), que no ocurren en este rango.<br>Esto es solo un modelo simplificado. Los valores incluidos son solo orientativos y de carácter didáctico.</p>`;
